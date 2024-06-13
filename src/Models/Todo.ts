@@ -18,6 +18,10 @@ const Todoschema:Schema = new Schema({
     done : {
         type : Boolean,
         default : false
+    },
+    deleteAt : {
+        type : Date,
+        default : null
     }
 },{ timestamps:true,
     versionKey:false

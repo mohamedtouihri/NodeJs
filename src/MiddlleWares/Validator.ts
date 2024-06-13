@@ -2,9 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import { Schema } from "joi";
 
 
-export const ValidateSchema = (schema:Schema) =>{
+export const ValidateSchema = (schema:Schema, target : "body" | "params") =>{
     return (req:Request,res:Response,next:NextFunction):void=>{
-        const {error} = schema.validate(req.body)
+        const data = target === "body" ? req.body : req.params
+        const {error} = schema.validate(data)
         if(error){
             console.log('Error from validate schema',error)
             const {details} = error
