@@ -1,4 +1,6 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema ,Document , PaginateModel} from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2'
+
 export interface ITodo extends Document{
     title : string,
     description : string,
@@ -27,4 +29,5 @@ const Todoschema:Schema = new Schema({
     versionKey:false
 })
 
-export default mongoose.model<ITodo>('Todo',Todoschema)
+Todoschema.plugin(mongoosePaginate)
+export default mongoose.model<ITodo,PaginateModel<ITodo>>('Todo',Todoschema)

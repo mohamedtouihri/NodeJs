@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CreateTodo, DeleteOneTodoById, GetOneTodoById, UpdateOneTodoById } from "../Controllers/TodoController";
+import { CreateTodo, DeleteOneTodoById, GetAllTodos, GetOneTodoById, UpdateOneTodoById } from "../Controllers/TodoController";
 import Joi from "joi";
 import { ValidateSchema } from "../MiddlleWares/Validator";
 
@@ -26,6 +26,9 @@ router.get('/todos/:id',ValidateSchema(GetOneTodoByIdSchema,"params"),GetOneTodo
 
 router.put('/todos/:id',ValidateSchema(GetOneTodoByIdSchema,"params"),
             ValidateSchema(UpdateTodoSchema,'body'),UpdateOneTodoById)
+
 router.delete('/todos/:id',ValidateSchema(GetOneTodoByIdSchema,"params"),DeleteOneTodoById)
+
+router.get('/todos',GetAllTodos)
 
 export default router

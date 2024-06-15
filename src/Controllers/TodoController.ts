@@ -1,5 +1,5 @@
 import {Request , Response} from 'express'
-import Todo, { ITodo } from '../Models/Todo'
+import Todo, { ITodo } from '../DataBase/Models/Todo'
 import { date } from 'joi'
 
 //Controller :  kima intermediare mebin front wela client 3ednou request wel base de données
@@ -75,4 +75,22 @@ export const DeleteOneTodoById  = async (req:Request,res:Response): Promise<void
     catch(error){
         res.status(400).json({error:'ERROR HAPPEN AT DELETE ONE TODO BY ID!!!'})
     }   
+}
+
+// crud : create , update , delete 
+
+export const GetAllTodos = async (req:Request,res:Response):Promise<void>=>{
+    try{
+        // const todos : ITodo[] = await Todo.find()
+        const { Page = 1, limit = 3 } = req.query
+        const Options = {
+            Page:parseInt(Page as string),
+            limit:parseInt(limit as string)
+        }
+        const PaginateTodos = await Todo.paginate({},Options) 
+        res.status(200).json({message : 'All todos returned successfully',PaginateTodos})
+    }
+    catch(error){
+        res.status(400).json({error:'ERROR HAPPEN AT GET ALL TODO !!!'})
+    }  
 }
