@@ -1,6 +1,7 @@
 import {Request , Response} from 'express'
 import Todo, { ITodo } from '../DataBase/Models/Todo'
 import { date } from 'joi'
+import APIFeatures from '../Helpers/API.Features'
 
 //Controller :  kima intermediare mebin front wela client 3ednou request wel base de données
 export const CreateTodo = async (req:Request,res:Response): Promise<void>=>{
@@ -82,12 +83,22 @@ export const DeleteOneTodoById  = async (req:Request,res:Response): Promise<void
 export const GetAllTodos = async (req:Request,res:Response):Promise<void>=>{
     try{
         // const todos : ITodo[] = await Todo.find()
-        const { Page = 1, limit = 3 } = req.query
+        const { page = 1, limit = 10 } = req.query
         const Options = {
-            Page:parseInt(Page as string),
+            page:parseInt(page as string),
             limit:parseInt(limit as string)
         }
-        const PaginateTodos = await Todo.paginate({},Options) 
+        let FindAllQuery = Todo.find()
+        const Features = new APIFeatures(
+            FindAllQuery,
+            req.query
+        )
+        .filter()
+        .sort()
+        .limitFields()
+        .search(['title','description'])
+        
+        const PaginateTodos = await Todo.paginate(Features?.query,Options) 
         res.status(200).json({message : 'All todos returned successfully',PaginateTodos})
     }
     catch(error){

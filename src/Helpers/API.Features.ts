@@ -7,8 +7,10 @@ class APIFeatures {
     }
     filter(){
         const queryObj = { ...this.queryString};
+        // console.log('Before',queryObj)
         const excludedFields = ['page','sort', 'limit', 'fields', 'deleted'];
         excludedFields.forEach(el => delete queryObj[el]);
+        // console.log('After',queryObj)
 
         let queryStr = JSON.stringify(queryObj);
 
@@ -17,9 +19,16 @@ class APIFeatures {
         queryStr = JSON.parse(queryStr);
 
         if(Object.keys(queryStr).length){
+            // console.log('WE have filter to apply')
+
             let queryOption = Object.keys(queryStr).map((field:any) => {
+                // console.log('each field',field,queryStr[field])
+                if(!!queryStr[field]){
+                    return {[field] :queryStr[field] === 'true'}
+                }
                 return {[field]: {$regex: queryStr[field], $option: 'i'},}
             });
+            // console.log(queryOption)
             this.query = this.query.find({ $and: queryOption });
         }
         return this;
@@ -60,6 +69,7 @@ class APIFeatures {
             const queryOption = searchFields.map((field: any) => ({
                 [field]: { $regex: this.queryString.search, $option: 'i'},
             }));
+            console.log(queryOption)
 
             this.query = this.query.find({ $or: queryOption});
         }

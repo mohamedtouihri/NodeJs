@@ -24,7 +24,10 @@ app.listen(port,()=>{
 
 import TodoRoutes from './Routes/TodoRoutes'
 import bodyParser from 'body-parser'
+import authRoutes from './Routes/AuthRoutes'
+
 app.use(bodyParser.json())
+app.use('/v1/auth',authRoutes)
 app.use('/v1/api',TodoRoutes)
 
 
