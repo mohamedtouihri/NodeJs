@@ -1,6 +1,7 @@
 import {Request , Response} from 'express'
 import User, { IUser } from '../DataBase/Models/User'
 import bcryt from 'bcryptjs'
+import _ from 'lodash'
 
 
 export const registerUser = async (req:Request,res:Response):Promise<void>=>{
@@ -13,6 +14,10 @@ export const registerUser = async (req:Request,res:Response):Promise<void>=>{
             return
         }
 
+        if(req?.file){
+            console.log(req?.file)
+        }
+
         const hashedPassword = await bcryt.hash(password,10)
 
         const newUser : IUser = new User ({
@@ -23,13 +28,13 @@ export const registerUser = async (req:Request,res:Response):Promise<void>=>{
 
         await newUser.save()
 
+        const user = await User.findById(newUser?.id)
+
         res.status(200).json({
             message:'User registred successfully',
-            data:newUser
+            data:user
         })
     }
-
-
     catch(error){
         res.status(400).json({
             error:'ERROR HAPPEN AT REGISTER USER!!!'})
