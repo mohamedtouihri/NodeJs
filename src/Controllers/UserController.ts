@@ -15,15 +15,23 @@ export const registerUser = async (req:Request,res:Response):Promise<void>=>{
         }
 
         if(req?.file){
-            console.log(req?.file)
+            const file = req?.file
+            const allowedImageTypes = ['image/jpeg','image/png','image/jpg']
+            console.log(file)
+            if (!allowedImageTypes.includes(file?.mimetype)){ 
+                (res.status(400).json({error:"only jpg, png types are allowed!!!"}))
+                return
+            };
         }
+   
 
         const hashedPassword = await bcryt.hash(password,10)
 
         const newUser : IUser = new User ({
             username,
             email,
-            password:hashedPassword
+            password:hashedPassword,
+            profilePictureUrl:req?.file?.filename
         })
 
         await newUser.save()
